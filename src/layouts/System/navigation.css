@@ -8,6 +8,11 @@
 
 .ant-menu-submenu-selected > .ant-menu-submenu-title{
     background-color: white;
+    color: black;
+}
+
+.ant-menu-submenu-selected > .ant-menu-title-content > a {
+    color: black !important;
 }
 
 .ant-menu-submenu-selected svg {
@@ -18,9 +23,22 @@
     color: #4E4040;
 }
 
-.ant-menu-submenu-selected i::before{
+.ant-menu-submenu-selected i::before {
     color: #4E4040;
 }
-.ant-menu-submenu-selected i::after{
+.ant-menu-submenu-selected i::after {
     color: #4E4040;
+}
+
+.logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+}
+
+.logo{
+    width: 70px;
+    height: 70px;
+    z-index: 2;
 }

@@ -13,9 +13,9 @@ export const NotFound: FC<IProps> = (): JSX.Element => {
     <Flex style={{ width: "100%", height: "100%" }} justify={"center"} align={"center"}>
       <Result
         title="404"
-        icon={<QuestionOutlined style={{ color: constants.blue }} />}
+        icon={<QuestionOutlined style={{ color: constants.black }} />}
         subTitle={t("not-found.title")}
-        extra={<Link to="/"><Button type="primary" style={{ background: constants.blue }}>{t("backHome")}</Button></Link>}
+        extra={<Link to="/"><Button type="primary" style={{ background: constants.black }}>{t("backHome")}</Button></Link>}
       />
     </Flex>
   );

@@ -63,7 +63,7 @@ export const ActivityAnalytics: FC<IProps> = (): JSX.Element => {
                         </Card>
                     </Col>
                 </Skeleton>
-            </Row> : <Result icon={< FileSearchOutlined color={constants.blue}/>} title={selected ? t("analytics.emptySelectMessage") : t("analytics.selectMessage")} />}
+            </Row> : <Result icon={< FileSearchOutlined color={constants.black}/>} title={selected ? t("analytics.emptySelectMessage") : t("analytics.selectMessage")} />}
         </Flex>
     );
 };

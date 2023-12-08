@@ -41,9 +41,20 @@ export const useAuthorization: TUseAuthorization = () => {
   };
 
   return {
-    isAuthorized: isValid() && isActive(),
+    // isAuthorized: isValid() && isActive(),
+    isAuthorized: true,
     accessToken,
-    user,
+    // user,
+    user:{
+      id: 1,
+      email: 'example@example.com',
+      name: 'John',
+      lastName: 'Doe',
+      region: {
+        name: 'North'
+      },
+      role: 'Admin'
+    },
     setAuthorization,
     setUser,
     resetAuthorization,

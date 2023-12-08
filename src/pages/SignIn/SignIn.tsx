@@ -25,8 +25,8 @@ export const SignIn: FC<IProps> = (): JSX.Element => {
 
   return !isAuthorized ? (
     <>
-      <Title level={1} style={{ color: constants.blue }}>НУМО</Title>
-      <Title level={3} style={{ color: constants.blue }}>Login: daniel.hrovinsky@gmail.com Password: duck</Title>
+      <Title level={1} style={{ color: constants.black }}>НУМО</Title>
+      <Title level={3} style={{ color: constants.black }}>Login: daniel.hrovinsky@gmail.com Password: duck</Title>
       <Form
         name="normal_login"
         className="login-form"
@@ -61,7 +61,7 @@ export const SignIn: FC<IProps> = (): JSX.Element => {
         <Form.Item>
           <Flex gap="small" align="center">
             <Button
-              style={{ background: constants.blue }}
+              style={{ background: constants.black }}
               type="primary"
               htmlType="submit"
               className="login-form-button"
@@ -75,12 +75,12 @@ export const SignIn: FC<IProps> = (): JSX.Element => {
   ) : (
     <Flex style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}>
       <Result
-        icon={<SmileOutlined style={{ color: constants.blue }} />}
+        icon={<SmileOutlined style={{ color: constants.black }} />}
         title={t("signIn.authorized.title")}
         extra={
           <Link to="/"><Button
             type="primary"
-            style={{ background: constants.blue }}
+            style={{ background: constants.black }}
           >{t("signIn.authorized.goHome")}</Button></Link>
         }
       />

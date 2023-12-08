@@ -1,5 +1,5 @@
 export const constants = {
-    blue: "#36B2C2",
+    black: "#000000",
     red: "#FF717F",
     yellow: "#FBBA00",
     brown: "#4E4040",

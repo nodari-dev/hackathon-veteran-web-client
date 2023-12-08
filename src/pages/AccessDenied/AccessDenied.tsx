@@ -16,7 +16,7 @@ export const AccessDenied: FC<IProps> = (): JSX.Element => {
         title="403"
         icon={<CloseOutlined style={{ color: constants.red }}/>}
         subTitle={t("no-auth.message") }
-        extra={<Link to={"/"}><Button type="primary" style={{ background: constants.blue }}>{t("backHome") }</Button></Link>}
+        extra={<Link to={"/"}><Button type="primary" style={{ background: constants.black }}>{t("backHome") }</Button></Link>}
       />
     </Flex>
   );

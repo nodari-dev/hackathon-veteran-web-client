@@ -15,7 +15,7 @@ export const LineChart: FC<IPieChart> = (params: IPieChart) => {
     legend: {
       position: 'top-left',
     },
-    color: () => constants.blue
+    color: () => constants.black
   };
   return <Bar {...config} />;
 };

@@ -97,20 +97,21 @@ export const System: FC<IProps> = ({ children }: IProps): JSX.Element => {
         style={{
           overflow: "auto",
           height: "100vh",
-          backgroundColor: constants.blue,
+          backgroundColor: constants.black,
         }}
       >
         <Flex style={{ height: "100%" }} vertical>
-          <div style={{ minHeight: 64, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Title level={4} style={{ margin: 0, lineHeight: 1, color: constants.white }}>НУМО</Title>
+          <div className="logo-container">
+            <img className="logo" src="/public/logo-white.png" alt="Logo"/>
           </div>
+
           <Flex style={{ height: "100%" }} vertical justify="space-between">
             <Menu
               mode="inline"
               defaultSelectedKeys={[ location.pathname ]}
               defaultOpenKeys={[ ""+LINKS.filter((link) => (location.pathname).split(link?.key as any).length === 2)?.[0]?.key || "" ]}
               items={LINKS}
-              style={{ background: constants.blue, color: constants.white }}
+              style={{ background: constants.black, color: constants.white }}
             />
 
             {collapsed

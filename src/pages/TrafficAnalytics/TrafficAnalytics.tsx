@@ -63,7 +63,7 @@ export const TrafficAnalytics: FC<IProps> = (): JSX.Element => {
 
                     </Col>
                 </Skeleton>
-            </Row> : <Result icon={< FileSearchOutlined color={constants.blue}/>} title={selected ? "Please select another group" : "Please select a group"} />}
+            </Row> : <Result icon={< FileSearchOutlined color={constants.black}/>} title={selected ? "Please select another group" : "Please select a group"} />}
         </Flex>)
 
 };

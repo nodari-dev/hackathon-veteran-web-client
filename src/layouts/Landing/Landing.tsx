@@ -24,7 +24,7 @@ export const Landing: FC<IProps> = ({ children }: IProps): JSX.Element => {
           width: "100%",
           display: "flex",
           alignItems: "center",
-            backgroundColor: constants.blue
+            backgroundColor: constants.black
         }}
       >
         <Title level={2} style={{color: constants.white}}>НУМО</Title>
