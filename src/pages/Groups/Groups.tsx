@@ -17,9 +17,9 @@ const EXCHANGE_RATES = gql`
     }
     totalCount
     items {
-      title
       id
-      usersPhoneNumbersCount
+      title
+      usersPhoneNumbers
     }
   }
 }

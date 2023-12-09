@@ -1,13 +1,10 @@
-import { FC, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Card, Col, Flex, Row, Skeleton } from "antd";
+import {FC, useEffect} from "react";
+import {useTranslation} from "react-i18next";
+import {Card, Col, Flex, Row, Skeleton} from "antd";
 import Title from "antd/es/typography/Title";
-import { AnalyticsBar } from "./components/AnalyticsBar";
-import { useApi } from "../../hooks";
-import { IUser } from "../../models";
-import { IData } from "../../models/data";
-import { PieChart, LineChart, ColumnChart } from "../../components";
-import {gql, useLazyQuery, useQuery} from "@apollo/client";
+import {AnalyticsBar} from "./components/AnalyticsBar";
+import {ColumnChart, LineChart, PieChart} from "../../components";
+import {gql, useLazyQuery} from "@apollo/client";
 
 interface IProps {}
 

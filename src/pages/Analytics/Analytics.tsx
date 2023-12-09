@@ -1,29 +1,81 @@
-import { FC, useState } from "react";
+import {FC, useEffect, useState} from "react";
 import { Card, Col, Flex, Result, Row, Select, Skeleton } from "antd";
 import Title from "antd/es/typography/Title";
 import { useTranslation } from "react-i18next";
-import { ColumnChart, LineChart, PieChart } from "../../components";
 import { FileSearchOutlined } from "@ant-design/icons";
 import { constants } from "../../styles/constants";
+import {gql, useLazyQuery} from "@apollo/client";
+import {ColumnChart, LineChart, PieChart} from "../../components";
 
 interface IProps {}
 
+const GROUPS = gql`
+  query UserGroups($where: UserGroupEntityFilterInput, $order: [UserGroupEntitySortInput!]) {
+      userGroups(
+        where: $where
+        order: $order
+      ) {
+         title
+         id
+         usersPhoneNumbersCount
+         usersPhoneNumbers
+      }
+    }
+`;
+
+const USERS = gql`
+  query Users($where: UserEntityFilterInput, $order: [UserEntitySortInput!]) {
+      users(where: $where, order: $order) {
+        fullName
+        region
+        registrationDate
+        type
+        botTypes
+        age
+      }
+  }
+`
+
 export const Analytics: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
-  const [ groups, setGroups ] = useState<any[]>([]);
-  const [ selected, setSelected ] = useState<string>();
+  const [ group, setGroup ] = useState();
+  const [ selected, setSelected ] = useState(null);
+  const [ getGroups, {data} ] = useLazyQuery(GROUPS);
+  const [getUSERs, { data: users }] = useLazyQuery(USERS);
 
-  const loading = !groups;
+
+  const loading = !data;
+
+  useEffect(() => {
+    getGroups();
+  }, [])
+
+  useEffect(() => {
+    const selectedGroup = data?.userGroups?.find(group => group?.id === selected)
+    setGroup(selectedGroup)
+
+    if(selected != null){
+      getUSERs({ variables: {
+          where: {
+            phoneNumber: {
+              in: selectedGroup?.usersPhoneNumbers
+            }
+          }
+        }})
+    }
+  }, [selected])
 
   const handleChange = (id: any) => {
     setSelected(id);
-    // // @ts-ignore
-    // api.groups.customers({ id, params: { pagination: [ { pageSize: 1000000, page: 1 } ] } })
-    //   .then((r) => {
-    //     setData([ ...r.items ]);
-    //     setKids(r.items.map((item: any) => item.kids).flat(Infinity));
-    //   });
   };
+
+  const getLineChartData = () => {
+    return users?.users?.map(user => {
+      const newArray = [...user.botTypes]
+      newArray.sort()
+      return {...user, botTypes: newArray}
+    })
+  }
 
   return (
     <Flex gap="small" vertical>
@@ -35,38 +87,38 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
             style={{ width: "280px" }}
             onChange={handleChange}
             value={selected}
-            options={groups}
+            options={data?.userGroups?.map(group => ({value: group?.id, label: group?.title}))}
           />
-          {selected && <Title style={{ margin: 0 }} level={5}>{t("analytics.usersInGroup")}: {data?.length}</Title>}
+          {selected && <Title style={{ margin: 0 }} level={5}>{t("analytics.usersInGroup")}: {group?.usersPhoneNumbersCount}</Title>}
         </Flex>
-
       </Flex>
-      {data?.length ? <Row gutter={[ 16, 16 ]}>
+
+      {data?.userGroups?.length && users?.users?.length ? <Row gutter={[ 16, 16 ]}>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-            <Card title={t("analytics.kidsAge")}>
-              <LineChart data={kids} keyword={"age"} />
+            <Card title="Вік користувачів">
+              <LineChart data={users?.users} keyword={"age"} />
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
             <Card title={t("analytics.recommendationDay")}>
-              <LineChart data={data} keyword={"recommendationDay"} />
+              <LineChart data={getLineChartData()} keyword={"botTypes"} />
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
             <Card title={t("analytics.conversationState")}>
-              <ColumnChart data={data} keyword={"conversationState"} />
+              <ColumnChart data={users?.users} keyword={"age"} />
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-            <Card title={t("analytics.preschoolStatus")}>
-              <PieChart data={kids} keyword={"preschoolStatus"} />
+            <Card title="Тип користувачів">
+              <PieChart data={users?.users} keyword={"type"} />
             </Card>
           </Col>
         </Skeleton>
