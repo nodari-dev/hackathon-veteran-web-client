@@ -7,33 +7,41 @@ import { useApi } from "../../hooks";
 import { IUser } from "../../models";
 import { IData } from "../../models/data";
 import { PieChart, LineChart, ColumnChart } from "../../components";
+import {gql, useLazyQuery, useQuery} from "@apollo/client";
 
 interface IProps {}
 
 export const Dashboard: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const api = useApi();
-  const [ data, setData ] = useState<IData>();
-  const [ users, setUsers ] = useState<IUser[]>([]);
 
-  const convertToAnalyticsData = (values:any) => ({ users: values[0], groups: values[1], regions: values[2] });
+  const usersGQL = gql`
+      query Users($where: UserEntityFilterInput, $order: [UserEntitySortInput!]) {
+        users(where: $where, order: $order) {
+          phoneNumber
+          fullName
+          age
+          region
+          type
+          registrationDate
+          botTypes
+        }
+      }
+  `;
+
+  const [getUsers, { error, data }] = useLazyQuery(usersGQL);
 
   useEffect(() => {
-    Promise.all([
-        api.users.get({}).then(r => r),
-        api.groups.get({}).then(r => r),
-        api.regions.get({}).then(r => r),
-      ],
-    ).then(value => setData(convertToAnalyticsData(value)));
-  }, []);
+    getUsers()
+  }, [])
 
-  useEffect(() => {
-    // @ts-ignore
-    api.users.get({ params: { pagination: [ { pageSize: 1000000, page: 1 } ] } })
-      .then((r: any) => setUsers(r.items));
-
-  }, []);
+  const getLineChartData = () => {
+    return data?.users?.map(user => {
+      const newArray = [...user.botTypes]
+      newArray.sort()
+      return {...user, botTypes: newArray}
+    })
+  }
 
   const loading = !data;
 
@@ -41,26 +49,26 @@ export const Dashboard: FC<IProps> = (): JSX.Element => {
 
     <Flex gap={"small"} vertical>
       <Title>{t("home.title")}</Title>
-      <AnalyticsBar data={data} />
+      <AnalyticsBar data={data?.users} />
       <Row gutter={[ 16, 16 ]}>
         <Col xs={24} sm={12} md={12} lg={8} xl={8}>
-          <Card title={t("dashboard.regionsChart")} style={{ width: "100%" }}>
+          <Card title="Типи користувачів" style={{ width: "100%" }}>
             <Skeleton loading={loading} active={true}>
-              <PieChart data={users} keyword={"region.name"} />
+              <PieChart data={data?.users} keyword={"type"} />
             </Skeleton>
           </Card>
         </Col>
         <Col xs={24} sm={12} md={12} lg={8} xl={8}>
-          <Card title={t("dashboard.daysChart")} style={{ width: "100%" }}>
+          <Card title="Користувачі по платформах" style={{ width: "100%" }}>
             <Skeleton loading={loading} active={true}>
-              <LineChart data={users} keyword={"recommendationDay"} />
+              <LineChart data={loading ? [] : getLineChartData()} keyword={"botTypes"} />
             </Skeleton>
           </Card>
         </Col>
         <Col xs={24} sm={12} md={12} lg={8} xl={8}>
-          <Card title={t("dashboard.deviceChart")} style={{ width: "100%" }}>
+          <Card title="Користувачі по віку" style={{ width: "100%" }}>
             <Skeleton loading={loading} active={true}>
-              <ColumnChart data={users} keyword={"botType"} />
+              <ColumnChart data={data?.users} keyword={"age"} />
             </Skeleton>
           </Card>
         </Col>
