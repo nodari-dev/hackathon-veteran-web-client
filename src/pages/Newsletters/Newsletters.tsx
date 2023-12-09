@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Flex } from "antd";
 import Title from "antd/es/typography/Title";
-import { List } from "../../components/List";
 import { useTranslation } from "react-i18next";
 
 interface IProps {}
@@ -52,7 +51,7 @@ export const Newsletters: FC<IProps> = (): JSX.Element => {
   return (
     <Flex gap="small" vertical>
       <Title level={3}>Newsletter</Title>
-      {!refresh && <List resource="newsletters" config={columns} />}
+      {/*{!refresh && <List resource="newsletters" config={columns} />}*/}
     </Flex>
   );
 };

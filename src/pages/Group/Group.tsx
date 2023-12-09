@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Descriptions, Flex, Select, Skeleton, Table } from "antd";
+import { Button, Flex, Select, Skeleton, Table } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { IGroup } from "../../models/group";
 import Title from "antd/es/typography/Title";
@@ -11,10 +11,10 @@ const { Option } = Select;
 interface IProps {}
 
 const GROUP = gql`
-  query pagedUserGroups($id: String!) {
+  query pagedUserGroups($id: UUID!) {
   pagedUserGroups(
     where: {
-      phoneNumber: {eq: $id}
+      id: {eq: $id}
     }
   ) {
     totalCount
@@ -44,80 +44,50 @@ export const Group: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [ groupData, setGroupData ] = useState<IGroup>();
-  const [ executeSearch ] = useLazyQuery(GROUP);
+  const [ executeSearch, { loading } ] = useLazyQuery(GROUP);
 
   useEffect(() => {
     if (groupId) {
-      executeSearch({ variables: { id: userId } }).then((data) => {
+      console.log(groupId);
+      executeSearch({ variables: { id: groupId } }).then((data) => {
         setGroupData(data.data.pagedUserGroups.items[0]);
       });
     }
   }, [ groupId ]);
 
   const items = groupData
-    ? Object.keys(tableData).map((key: any) => ({
-      key,
-      label: tableData[key],
-      children: groupData[key],
-    }))
+    ? groupData.usersPhoneNumbers.map((i) => ({ phoneNumber: i }))
     : [];
 
-  // const config: any = [
-  //   {
-  //     title: "ID",
-  //     dataIndex: "id",
-  //     sorter: (a: any, b: any) => a.id - b.id,
-  //     key: "id",
-  //   },
-  //   {
-  //     title: t(`user-info.name`),
-  //     dataIndex: "name",
-  //     sorter: true,
-  //     key: "name",
-  //   },
-  //   {
-  //     title: t(`user-info.age`),
-  //     dataIndex: "age",
-  //     align: "center",
-  //     sorter: (a: any, b: any) => a.age - b.age,
-  //     key: "age",
-  //   },
-  //   {
-  //     title: t(`user-info.preschoolStatus`),
-  //     dataIndex: "preschoolStatus",
-  //     key: "preschoolStatus",
-  //     align: "center",
-  //   },
-  // ];
+  const config: any = [
+    {
+      title: "ID",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+    },
+    {
+      title: t("users.actions"),
+      dataIndex: "",
+      key: "x",
+      fixed: "right",
+      width: "100px",
+      align: "center",
+      render: (record: any) => <Button
+        onClick={() => navigate("/user/" + record.phoneNumber)}
+      >{t("users.view")}</Button>,
+    },
+  ];
 
   return (
     <Flex vertical>
-      <Skeleton loading={!user} active={true}>
-        <Descriptions title={t(`user-info.title`)}>
-          {items.map((item) => {
-
-            if (item.key.includes("Date")) {
-              return (
-                <Descriptions.Item key={item.key} label={t(`user-info.${item.key}`)}>
-                  {new Date(item.children).toLocaleString()}
-                </Descriptions.Item>
-              );
-            }
-
-            return (
-              <Descriptions.Item key={item.key} label={t(`user-info.${item.key}`)}>
-                {item.children}
-              </Descriptions.Item>
-            );
-          })}
-        </Descriptions>
-
-        <Title level={3} style={{ margin: 0 }}>{t("users.title")}</Title>
-        {/*<Table*/}
-        {/*  loading={!groupData?.usersPhoneNumbers?.length}*/}
-        {/*  columns={config}*/}
-        {/*  dataSource={groupData?.usersPhoneNumbers || []}*/}
-        {/*/>*/}
+      <Skeleton loading={!groupData} active={true}>
+        <Title level={3}>{groupData?.title}</Title>
+        <Title level={5}>Users ({groupData?.usersPhoneNumbersCount})</Title>
+        <Table
+          columns={config}
+          dataSource={items}
+          pagination={{ total: groupData?.usersPhoneNumbersCount }}
+        />
       </Skeleton>
     </Flex>
   );

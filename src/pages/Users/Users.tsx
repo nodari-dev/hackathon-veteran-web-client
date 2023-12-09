@@ -129,7 +129,7 @@ export const Users: FC<IProps> = (): JSX.Element => {
         pagination={{ ...params.pagination, total, onChange: onPaginationChange }}
         dataSource={data?.pagedUsers?.items}
         onChange={onChange}
-        scroll={{ x: 1200 }}
+        scroll={{ x: 600 }}
       />
     </Flex>
   );

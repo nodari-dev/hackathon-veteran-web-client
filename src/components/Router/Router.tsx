@@ -21,14 +21,7 @@ import { useApi, useAuthorization } from "../../hooks";
 interface IProps {}
 
 export const Router: FC<IProps> = (): JSX.Element => {
-  const api = useApi();
-  const { isAuthorized, setUser } = useAuthorization();
-
-  useEffect(() => {
-    if (isAuthorized) {
-      api.account.get({}).then((user) => setUser(user));
-    }
-  }, []);
+  const { isAuthorized } = useAuthorization();
 
   const PageDashboardWithCheckAuthorization = withCheckAuthorization(Dashboard);
   const PageUsersWithCheckAuthorization = withCheckAuthorization(Users);
