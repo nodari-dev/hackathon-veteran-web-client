@@ -96,7 +96,7 @@ export const System: FC<IProps> = ({ children }: IProps): JSX.Element => {
       >
         <Flex style={{ height: "100%" }} vertical>
           <div className="logo-container">
-            <img className="logo" src="/public/logo.png" alt="Logo" />
+            <img className="logo" src="./public/logo.png" alt="Logo" />
           </div>
 
           <Flex style={{ height: "100%" }} vertical justify="space-between">
