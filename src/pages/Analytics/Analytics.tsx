@@ -10,7 +10,7 @@ import { constants } from "../../styles/constants";
 
 interface IProps {}
 
-export const UserAnalytics: FC<IProps> = (): JSX.Element => {
+export const Analytics: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
   const api = useApi();
   const [ groups, setGroups ] = useState<any[]>([]);

@@ -1,9 +1,9 @@
 import React, { FC, useState } from "react";
 import {
   AppstoreOutlined,
-  CoffeeOutlined,
   FundOutlined,
-  LogoutOutlined, MailOutlined,
+  LogoutOutlined,
+  MailOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   TeamOutlined,
@@ -12,7 +12,6 @@ import {
 import { Avatar, Button, Flex, Layout, Menu, MenuProps, Select } from "antd";
 import i18n from "i18next";
 import { useTranslation } from "react-i18next";
-import Title from "antd/lib/typography/Title";
 import { useAuthorization } from "../../hooks";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { constants } from "../../styles/constants";
@@ -69,17 +68,11 @@ export const System: FC<IProps> = ({ children }: IProps): JSX.Element => {
       getItem(<Link to="/group/all">{t("sidebar.all")}</Link>, "/group/all"),
       getItem(<Link to="/group/create">{t("sidebar.create")}</Link>, "/group/create"),
     ]),
-    getItem(t("sidebar.analytics"), "/analytics", <FundOutlined />, [
-      getItem(<Link to="/analytics/users">{t("sidebar.users")}</Link>, "/analytics/users"),
-      getItem(<Link to="/analytics/traffic">{t("sidebar.traffic")}</Link>, "/analytics/traffic"),
-      getItem(<Link to="/analytics/activity" >{t("sidebar.activity")}</Link>, "/analytics/activity"),
-      getItem(<Link to="/analytics/newsletter">{t("sidebar.newsletter")}</Link>, "/analytics/newsletter"),
-    ]),
+    getItem(<Link to="/analytics">{t("sidebar.analytics")}</Link>, "/analytics", <FundOutlined />),
     getItem(t("sidebar.newsletter"), "/newsletter", <MailOutlined />, [
       getItem(<Link to="/newsletter/all">{t("sidebar.all")}</Link>, "/newsletter/all"),
       getItem(<Link to="/newsletter/create">{t("sidebar.create")}</Link>, "/newsletter/create"),
     ]),
-    getItem(<Link to="/staff">{t("sidebar.staff")}</Link>, "/staff", <CoffeeOutlined />),
   ];
 
   return (
@@ -98,19 +91,21 @@ export const System: FC<IProps> = ({ children }: IProps): JSX.Element => {
           overflow: "auto",
           height: "100vh",
           backgroundColor: constants.white,
-          borderRight: "1px solid rgba(0, 0, 0, 0.2)"
+          borderRight: "1px solid rgba(0, 0, 0, 0.2)",
         }}
       >
         <Flex style={{ height: "100%" }} vertical>
           <div className="logo-container">
-            <img className="logo" src="/public/logo.png" alt="Logo"/>
+            <img className="logo" src="/public/logo.png" alt="Logo" />
           </div>
 
           <Flex style={{ height: "100%" }} vertical justify="space-between">
             <Menu
               mode="inline"
               defaultSelectedKeys={[ location.pathname ]}
-              defaultOpenKeys={[ ""+LINKS.filter((link) => (location.pathname).split(link?.key as any).length === 2)?.[0]?.key || "" ]}
+              defaultOpenKeys={[
+                "" + LINKS.filter((link) => (location.pathname).split(link?.key as any).length === 2)?.[0]?.key || "",
+              ]}
               items={LINKS}
             />
 

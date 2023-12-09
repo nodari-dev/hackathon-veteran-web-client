@@ -11,7 +11,7 @@ interface IProps {
   children?: React.ReactNode | React.ReactNode[];
 }
 
-export const AuthLayout: FC<IProps> = ({ children }: IProps): JSX.Element => {
+export const Auth: FC<IProps> = ({ children }: IProps): JSX.Element => {
   return (
     <Layout style={{ height: "100vh" }}>
       <Content style={{ padding: "50px 50px 0 50px", height: "100%" }}>

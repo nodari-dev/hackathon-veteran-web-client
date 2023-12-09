@@ -2,6 +2,10 @@ module.exports = {
   root: true,
   env: { browser: true, es2020: true },
   extends: [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:react/recommended",
@@ -10,15 +14,16 @@ module.exports = {
   ],
   ignorePatterns: [ "dist", ".eslintrc.cjs" ],
   parser: "@typescript-eslint/parser",
-  plugins: [ "react-refresh" ],
+  parserOptions: {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  plugins: [ "react-refresh", "react", "@typescript-eslint" ],
   rules: {
-    "react/react-in-jsx-scope": [ "off" ],
-    "react/jsx-uses-react": [ "off" ],
-    "react/jsx-props-no-spreading": [ "off" ],
-    "react/no-unescaped-entities": [ "off" ],
-    "react-refresh/only-export-components": [
-      "warn",
-      { allowConstantExport: true },
-    ],
+    "react/react-in-jsx-scope": "off",
+    "spaced-comment": "error",
+    "no-duplicate-imports": "error",
+    "no-alert": "error",
+    "no-console": "error"
   },
 };

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useApi, useAuthorization } from "../../hooks";
+import { useAuthorization, useLoader, useNotification } from "../../hooks";
 import { Link, useNavigate } from "react-router-dom";
 import { LockOutlined, MailOutlined, SmileOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input, Result } from "antd";
@@ -10,17 +10,36 @@ import Title from "antd/es/typography/Title";
 interface IProps {}
 
 export const SignIn: FC<IProps> = (): JSX.Element => {
-  const api = useApi();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const loader = useLoader();
+  const notification = useNotification();
   const { isAuthorized, setAuthorization } = useAuthorization();
 
   const onFinish = (values: any) => {
-    api.authorization.signIn({ email: values.email, password: values.password, loader: t("signIn.loader.title") })
-      .then(({ accessToken, user }: any) => {
-        setAuthorization(accessToken, user);
+    const signIn = loader.create(t("signIn.loader.title"));
+    signIn.start();
+
+    const ref = setTimeout(() => {
+      if ((values.email === "daniel.hrovinsky@gmail.com") && (values.password === "duck")) {
+        setAuthorization({
+          id: 1,
+          email: "daniel.hrovinsky@gmail.com",
+          name: "Daniel",
+          lastName: "Hrovinskyi",
+          region: {
+            name: "North",
+          },
+          role: "Admin",
+        });
         navigate("/");
-      });
+      } else {
+        notification.error("Wrong credentials !");
+      }
+      signIn.stop();
+      clearTimeout(ref);
+    }, 2000);
+
   };
 
   return !isAuthorized ? (

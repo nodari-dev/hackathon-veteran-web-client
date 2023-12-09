@@ -26,7 +26,7 @@ export const authorizationReducer: TReducer = (state: IState = initialState, act
   switch (action.type) {
     case SET_AUTHORIZATION:
       return {
-        accessToken: action.accessToken,
+        accessToken: "",
         user: action.user,
       };
 

@@ -3,13 +3,12 @@ import { useStore } from "./useStore";
 import { RST_AUTHORIZATION, SET_AUTHORIZATION, SET_USER } from "../store/authorization/authorization.actions";
 import { useLoader } from "./useLoader";
 import { IUser } from "../models";
-import { JWT } from "../utils";
 
 type TUseAuthorization = () => {
   isAuthorized: boolean;
   accessToken: string;
   user: IUser;
-  setAuthorization: (token: string, user?: IUser) => void;
+  setAuthorization: (user: IUser) => void;
   resetAuthorization: () => void;
   setUser: (user: IUser) => void;
 };
@@ -19,10 +18,8 @@ export const useAuthorization: TUseAuthorization = () => {
   const dispatch = useDispatch();
   const { accessToken, user } = useStore((store) => store.authorization);
 
-  const { isValid, isActive } = JWT.parseAndValidateToken(accessToken);
-
-  const setAuthorization = (token: string, user: IUser | undefined): void => {
-    dispatch({ type: SET_AUTHORIZATION, accessToken: token, user: user });
+  const setAuthorization = (user: IUser | undefined): void => {
+    dispatch({ type: SET_AUTHORIZATION, user: user });
   };
 
   const setUser = (user: IUser): void => {
@@ -41,20 +38,9 @@ export const useAuthorization: TUseAuthorization = () => {
   };
 
   return {
-    // isAuthorized: isValid() && isActive(),
-    isAuthorized: true,
+    isAuthorized: !!user.email,
     accessToken,
-    // user,
-    user:{
-      id: 1,
-      email: 'example@example.com',
-      name: 'John',
-      lastName: 'Doe',
-      region: {
-        name: 'North'
-      },
-      role: 'Admin'
-    },
+    user,
     setAuthorization,
     setUser,
     resetAuthorization,
