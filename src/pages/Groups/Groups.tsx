@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Button, Flex, Popconfirm, Table } from "antd";
+import { Button, Flex, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import Title from "antd/es/typography/Title";
 import { gql, useLazyQuery } from "@apollo/client";

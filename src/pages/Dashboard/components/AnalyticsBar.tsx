@@ -1,11 +1,9 @@
 import { FC } from "react";
 import { Card, Col, Row, Skeleton } from "antd";
 import Title from "antd/es/typography/Title";
-import { useTranslation } from "react-i18next";
-import { IData } from "../../../models/data";
 
 interface IProps {
-  data: any
+  data: any;
 }
 
 const cartStyles: any = {
@@ -19,7 +17,6 @@ const cartContentStyles: any = {
 };
 
 export const AnalyticsBar: FC<IProps> = ({ data }: any) => {
-  const { t } = useTranslation();
   return (
     <Skeleton loading={!data} active style={cartContentStyles}>
       <Row gutter={[ 16, 16 ]}>

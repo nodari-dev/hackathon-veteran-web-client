@@ -26,14 +26,14 @@ export const Dashboard: FC<IProps> = (): JSX.Element => {
       }
   `;
 
-  const [getUsers, { error, data }] = useLazyQuery(usersGQL);
+  const [getUsers, { data }] = useLazyQuery(usersGQL);
 
   useEffect(() => {
     getUsers()
   }, [])
 
   const getLineChartData = () => {
-    return data?.users?.map(user => {
+    return data?.users?.map((user:any) => {
       const newArray = [...user.botTypes]
       newArray.sort()
       return {...user, botTypes: newArray}

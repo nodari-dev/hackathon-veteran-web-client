@@ -115,7 +115,7 @@ export const User: FC<IProps> = (): JSX.Element => {
       title: "is Question",
       dataIndex: "isQuestion",
       key: "isQuestion",
-      render: (record) => record ? "Yes" : "No",
+      render: (record:any) => record ? "Yes" : "No",
     },
     {
       title: "Bot Type",
@@ -131,7 +131,7 @@ export const User: FC<IProps> = (): JSX.Element => {
       title: "Timestamp",
       dataIndex: "timestamp",
       key: "timestamp",
-      render: (record) => (new Date(record)).toLocaleString(),
+      render: (record:any) => (new Date(record)).toLocaleString(),
     },
   ];
 

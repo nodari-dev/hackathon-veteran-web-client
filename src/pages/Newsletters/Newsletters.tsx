@@ -72,19 +72,19 @@ export const Newsletters: FC<IProps> = (): JSX.Element => {
       title: t("Users"),
       dataIndex: "phoneNumbers",
       key: "phoneNumbers",
-      render: (record) => record.length
+      render: (record:any) => record.length
     },
     {
       title: t("Is Triggered"),
       dataIndex: "isTriggered",
       key: "isTriggered",
-      render: (record) => record ? "Yes" :"No"
+      render: (record:any) => record ? "Yes" :"No"
     },
     {
       title: t("Trigger At"),
       dataIndex: "triggerAt",
       key: "triggerAt",
-      render: (record) => (new Date(record).toLocaleString())
+      render: (record:any) => (new Date(record).toLocaleString())
     },
     {
       title: t("groups.actions"),

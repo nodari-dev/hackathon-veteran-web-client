@@ -38,7 +38,7 @@ const USERS = gql`
 
 export const Analytics: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
-  const [ group, setGroup ] = useState();
+  const [ group, setGroup ] = useState<any>();
   const [ selected, setSelected ] = useState(null);
   const [ getGroups, {data} ] = useLazyQuery(GROUPS);
   const [getUSERs, { data: users }] = useLazyQuery(USERS);
@@ -51,7 +51,7 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
   }, [])
 
   useEffect(() => {
-    const selectedGroup = data?.userGroups?.find(group => group?.id === selected)
+    const selectedGroup = data?.userGroups?.find((group:any) => group?.id === selected)
     setGroup(selectedGroup)
 
     if(selected != null){
@@ -70,7 +70,7 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
   };
 
   const getLineChartData = () => {
-    return users?.users?.map(user => {
+    return users?.users?.map((user:any) => {
       const newArray = [...user.botTypes]
       newArray.sort()
       return {...user, botTypes: newArray}
@@ -87,7 +87,7 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
             style={{ width: "280px" }}
             onChange={handleChange}
             value={selected}
-            options={data?.userGroups?.map(group => ({value: group?.id, label: group?.title}))}
+            options={data?.userGroups?.map((group:any) => ({value: group?.id, label: group?.title}))}
           />
           {selected && <Title style={{ margin: 0 }} level={5}>{t("analytics.usersInGroup")}: {group?.usersPhoneNumbersCount}</Title>}
         </Flex>

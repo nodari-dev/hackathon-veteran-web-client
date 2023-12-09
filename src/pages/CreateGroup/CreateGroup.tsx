@@ -12,7 +12,7 @@ interface IProps {}
 
 export const CreateGroup: FC<IProps> = (): JSX.Element => {
   const notification = useNotification();
-  const { days, tableLabels, conversationStates } = useTableData();
+  const { tableLabels } = useTableData();
   const { t } = useTranslation();
 
   const usersGQL = gql`
@@ -37,7 +37,7 @@ export const CreateGroup: FC<IProps> = (): JSX.Element => {
       }
   `;
 
-  const [ getUsers, { loading, error, data } ] = useLazyQuery(usersGQL);
+  const [ getUsers, { data } ] = useLazyQuery(usersGQL);
   const [ create ] = useMutation(groupCreate);
   const [ title, setTitle ] = useState();
 
@@ -51,29 +51,31 @@ export const CreateGroup: FC<IProps> = (): JSX.Element => {
 
   const findUsers = (body: any) => {
     try {
-      setTitle(body.name)
-      getUsers({ variables: {
+      setTitle(body.name);
+      getUsers({
+        variables: {
           where: {
             age: {
               gte: body.minAge,
-              ngt: body.maxAge
+              ngt: body.maxAge,
             },
             region: {
-              contains: body.region
+              contains: body.region,
             },
             type: {
-              eq: body.type
+              eq: body.type,
             },
             botTypes: {
-              some: {contains: body.bot}
-            }
+              some: { contains: body.bot },
+            },
           },
           order: [
             {
-              registrationDate: "DESC"
-            }
-          ]
-        }});
+              registrationDate: "DESC",
+            },
+          ],
+        },
+      });
     } catch (e: any) {
       notification.error(e);
     }
@@ -81,7 +83,7 @@ export const CreateGroup: FC<IProps> = (): JSX.Element => {
 
   const createGroup = () => {
     if (!!data?.users) {
-      const phones = data?.users.map(user => user?.phoneNumber);
+      const phones = data?.users.map((user:any) => user?.phoneNumber);
       create({ variables: { command: { title, usersPhoneNumbers: phones } } });
     }
   };
@@ -98,7 +100,7 @@ export const CreateGroup: FC<IProps> = (): JSX.Element => {
           >
             <Title>{t("groups.createTitle")}</Title>
             <Form.Item required name="name" label={tableLabels.name}>
-              <Input onChage={e => setTitle(e)} />
+              <Input />
             </Form.Item>
 
             <Form.Item name="bot" label={tableLabels.customerTraffics}>

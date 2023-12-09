@@ -1,12 +1,9 @@
 import { FC, useEffect, useState } from "react";
-import { Button, Descriptions, Flex, Select, Skeleton, Table } from "antd";
+import { Button, Descriptions, Flex, Skeleton, Table } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { IGroup } from "../../models/group";
 import Title from "antd/es/typography/Title";
 import { useTranslation } from "react-i18next";
 import { gql, useLazyQuery } from "@apollo/client";
-
-const { Option } = Select;
 
 interface IProps {}
 
@@ -33,8 +30,8 @@ export const Newsletter: FC<IProps> = (): JSX.Element => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [ groupData, setGroupData ] = useState<IGroup>();
-  const [ executeSearch, { loading } ] = useLazyQuery(line);
+  const [ groupData, setGroupData ] = useState<any>();
+  const [ executeSearch ] = useLazyQuery(line);
 
   useEffect(() => {
     if (id) {
@@ -45,7 +42,7 @@ export const Newsletter: FC<IProps> = (): JSX.Element => {
   }, [ id ]);
 
   const items = groupData
-    ? groupData.phoneNumbers.map((i) => ({ phoneNumber: i }))
+    ? groupData.phoneNumbers.map((i: any) => ({ phoneNumber: i }))
     : [];
 
   const config: any = [

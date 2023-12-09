@@ -31,7 +31,7 @@ interface IProps {}
 
 export const CreateNewsletter: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [ groups, setGroups ] = useState<any[]>([]);
   const [ executeSearch ] = useLazyQuery(EXCHANGE_RATES);
   const [ create ] = useMutation(groupCreate);
@@ -46,14 +46,14 @@ export const CreateNewsletter: FC<IProps> = (): JSX.Element => {
           },
         },
       },
-    }).then(()=> {
-      navigate("/newsletter/all")
+    }).then(() => {
+      navigate("/newsletter/all");
     });
   };
 
   useEffect(() => {
     executeSearch().then((data) => {
-      setGroups(data.data.userGroups.map(({ id, title, usersPhoneNumbers }) => ({
+      setGroups(data.data.userGroups.map(({ id, title, usersPhoneNumbers }:any) => ({
         value: id,
         label: title + ` (${usersPhoneNumbers.length})`,
         data: usersPhoneNumbers,
@@ -68,7 +68,7 @@ export const CreateNewsletter: FC<IProps> = (): JSX.Element => {
   };
 
   // eslint-disable-next-line arrow-body-style
-  const disabledDate = (current) => {
+  const disabledDate = (current: any) => {
     // Can not select days before today and today
     return current && current < dayjs().endOf("day");
   };
