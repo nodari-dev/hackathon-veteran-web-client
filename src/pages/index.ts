@@ -10,6 +10,7 @@ import { Dashboard } from "./Dashboard";
 import { NotFound } from "./NotFound";
 import { SignIn } from "./SignIn";
 import { Newsletters } from "./Newsletters";
+import { Newsletter } from "./Newsletter";
 import { CreateNewsletter } from "./CreateNewsletter";
 
 export {
@@ -24,6 +25,7 @@ export {
   User,
   Users,
   Newsletters,
+  Newsletter,
   Analytics,
   CreateNewsletter,
 };

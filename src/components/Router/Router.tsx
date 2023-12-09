@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { Auth as AuthLayout, System as SystemLayout } from "../../layouts";
 import {
@@ -8,6 +8,7 @@ import {
   Dashboard,
   Group,
   Groups,
+  Newsletter,
   Newsletters,
   NotFound,
   Profile,
@@ -16,7 +17,7 @@ import {
   Users,
 } from "../../pages";
 import { withCheckAuthorization } from "../../hocs";
-import { useApi, useAuthorization } from "../../hooks";
+import { useAuthorization } from "../../hooks";
 
 interface IProps {}
 
@@ -28,6 +29,7 @@ export const Router: FC<IProps> = (): JSX.Element => {
   const PageUserWithCheckAuthorization = withCheckAuthorization(User);
   const PageGroupsWithCheckAuthorization = withCheckAuthorization(Groups);
   const PageNewslettersWithCheckAuthorization = withCheckAuthorization(Newsletters);
+  const PageNewsletterWithCheckAuthorization = withCheckAuthorization(Newsletter);
   const PageCreateNewslettersWithCheckAuthorization = withCheckAuthorization(CreateNewsletter);
   const PageGroupWithCheckAuthorization = withCheckAuthorization(Group);
   const PageCreateGroupWithCheckAuthorization = withCheckAuthorization(CreateGroup);
@@ -46,6 +48,7 @@ export const Router: FC<IProps> = (): JSX.Element => {
             <Route path="/group/create" element={<PageCreateGroupWithCheckAuthorization />} />
             <Route path="/analytics" element={<PageUserAnalyticsWithCheckAuthorization />} />
             <Route path="/newsletter/all" element={<PageNewslettersWithCheckAuthorization />} />
+            <Route path="/newsletter/:id" element={<PageNewsletterWithCheckAuthorization />} />
             <Route path="/newsletter/create" element={<PageCreateNewslettersWithCheckAuthorization />} />
             <Route path="/profile" element={<PageProfileWithCheckAuthorization />} />
             <Route path="*" element={<NotFound />} />

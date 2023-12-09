@@ -81,17 +81,10 @@ export const Groups: FC<IProps> = (): JSX.Element => {
       render: (record: any) => (
         <Flex gap={8}>
           <Button onClick={() => navigate("/group/" + record.id)}>{t("groups.view")}</Button>
-          <Popconfirm title={t("groups.deleteConfirm")} onConfirm={() => handleDelete(record.id)}>
-            <Button danger>{t("groups.delete")}</Button>
-          </Popconfirm>
         </Flex>
       ),
     },
   ];
-
-  const handleDelete = (id: string) => {
-    console.log("delete", id);
-  };
 
   const onPaginationChange = (page: number, pageSize: number): void => {
     setParams({ ...params, pagination: { page, pageSize } });
