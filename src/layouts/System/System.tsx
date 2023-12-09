@@ -97,12 +97,13 @@ export const System: FC<IProps> = ({ children }: IProps): JSX.Element => {
         style={{
           overflow: "auto",
           height: "100vh",
-          backgroundColor: constants.black,
+          backgroundColor: constants.white,
+          borderRight: "1px solid rgba(0, 0, 0, 0.2)"
         }}
       >
         <Flex style={{ height: "100%" }} vertical>
           <div className="logo-container">
-            <img className="logo" src="/public/logo-white.png" alt="Logo"/>
+            <img className="logo" src="/public/logo.png" alt="Logo"/>
           </div>
 
           <Flex style={{ height: "100%" }} vertical justify="space-between">
@@ -111,7 +112,6 @@ export const System: FC<IProps> = ({ children }: IProps): JSX.Element => {
               defaultSelectedKeys={[ location.pathname ]}
               defaultOpenKeys={[ ""+LINKS.filter((link) => (location.pathname).split(link?.key as any).length === 2)?.[0]?.key || "" ]}
               items={LINKS}
-              style={{ background: constants.black, color: constants.white }}
             />
 
             {collapsed
