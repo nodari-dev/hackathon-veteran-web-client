@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { IData } from "../../../models/data";
 
 interface IProps {
-  data: IData | undefined;
+  data: any
 }
 
 const cartStyles: any = {
@@ -23,18 +23,13 @@ export const AnalyticsBar: FC<IProps> = ({ data }: any) => {
   return (
     <Skeleton loading={!data} active style={cartContentStyles}>
       <Row gutter={[ 16, 16 ]}>
-        {
-          data ?
-            Object.keys(data).map((key: any) =>
-              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                <Card title={t(`dashboard.${key}`)} style={cartStyles}>
-                  <Title level={2}>
-                    {data[key].totalCount}
-                  </Title>
-                </Card>
-              </Col>,
-            ) : <></>
-        }
+        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+          <Card title="Загальна кількість користувачів" style={cartStyles}>
+            <Title level={2}>
+              {data.length}
+            </Title>
+          </Card>
+        </Col>,
       </Row>
     </Skeleton>
   );

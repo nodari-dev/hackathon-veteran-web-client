@@ -13,26 +13,17 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
   const [ groups, setGroups ] = useState<any[]>([]);
   const [ selected, setSelected ] = useState<string>();
-  const [ data, setData ] = useState<ICustomer[]>();
-  const [ kids, setKids ] = useState<{ age: number, preschoolState: string }[]>();
-
-  useEffect(() => {
-    // @ts-ignore
-    api.groups.get({ params: { pagination: [ { pageSize: 1000000, page: 1 } ] } })
-      .then((r: any) => setGroups(r.items.map(({ id, name }: any) => ({ value: id, label: name }))));
-
-  }, []);
 
   const loading = !groups;
 
   const handleChange = (id: any) => {
     setSelected(id);
-    // @ts-ignore
-    api.groups.customers({ id, params: { pagination: [ { pageSize: 1000000, page: 1 } ] } })
-      .then((r) => {
-        setData([ ...r.items ]);
-        setKids(r.items.map((item: any) => item.kids).flat(Infinity));
-      });
+    // // @ts-ignore
+    // api.groups.customers({ id, params: { pagination: [ { pageSize: 1000000, page: 1 } ] } })
+    //   .then((r) => {
+    //     setData([ ...r.items ]);
+    //     setKids(r.items.map((item: any) => item.kids).flat(Infinity));
+    //   });
   };
 
   return (
