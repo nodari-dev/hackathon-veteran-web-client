@@ -1,20 +1,60 @@
-import { FC, useEffect, useState } from "react";
+import {FC, useEffect, useState} from "react";
 import { Card, Col, Flex, Result, Row, Select, Skeleton } from "antd";
 import Title from "antd/es/typography/Title";
 import { useTranslation } from "react-i18next";
-import { ColumnChart, LineChart, PieChart } from "../../components";
-import { ICustomer } from "../../models/customer";
 import { FileSearchOutlined } from "@ant-design/icons";
 import { constants } from "../../styles/constants";
+import {gql, useLazyQuery} from "@apollo/client";
 
 interface IProps {}
 
+const GROUPS = gql`
+  query UserGroups($where: UserGroupEntityFilterInput, $order: [UserGroupEntitySortInput!]) {
+      userGroups(
+        where: $where
+        order: $order
+      ) {
+         title
+         id
+         usersPhoneNumbersCount
+         usersPhoneNumbers
+      }
+    }
+`;
+
+const USERS = gql`
+  query Users {
+      users(where: {
+        phoneNumber: {
+          in: ["363463", "66346346", "423535"]
+        } 
+      }) {
+          items {
+              fullName
+              age
+          }
+      }
+  }
+`
+
+
 export const Analytics: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
-  const [ groups, setGroups ] = useState<any[]>([]);
+  const [ group, setGroup ] = useState();
   const [ selected, setSelected ] = useState<string>();
+  const [ getGroups, {data} ] = useLazyQuery(GROUPS);
 
-  const loading = !groups;
+  const loading = !data;
+
+  useEffect(() => {
+    getGroups();
+  }, [])
+
+  useEffect(() => {
+    const selectedGroup = data?.userGroups?.find(group => group?.id === selected)
+    setGroup(selectedGroup)
+
+  }, [selected])
 
   const handleChange = (id: any) => {
     setSelected(id);
@@ -36,9 +76,9 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
             style={{ width: "280px" }}
             onChange={handleChange}
             value={selected}
-            options={groups}
+            options={data?.userGroups?.map(group => ({value: group?.id, label: group?.title}))}
           />
-          {selected && <Title style={{ margin: 0 }} level={5}>{t("analytics.usersInGroup")}: {data?.length}</Title>}
+          {selected && <Title style={{ margin: 0 }} level={5}>{t("analytics.usersInGroup")}: {group?.usersPhoneNumbersCount}</Title>}
         </Flex>
 
       </Flex>
@@ -46,28 +86,28 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
             <Card title={t("analytics.kidsAge")}>
-              <LineChart data={kids} keyword={"age"} />
+              {/*<LineChart data={kids} keyword={"age"} />*/}
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
             <Card title={t("analytics.recommendationDay")}>
-              <LineChart data={data} keyword={"recommendationDay"} />
+              {/*<LineChart data={data} keyword={"recommendationDay"} />*/}
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
             <Card title={t("analytics.conversationState")}>
-              <ColumnChart data={data} keyword={"conversationState"} />
+              {/*<ColumnChart data={data} keyword={"conversationState"} />*/}
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
             <Card title={t("analytics.preschoolStatus")}>
-              <PieChart data={kids} keyword={"preschoolStatus"} />
+              {/*<PieChart data={kids} keyword={"preschoolStatus"} />*/}
             </Card>
           </Col>
         </Skeleton>

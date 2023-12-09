@@ -44,7 +44,7 @@ export const Group: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [ groupData, setGroupData ] = useState<IGroup>();
-  const [ executeSearch, { loading } ] = useLazyQuery(GROUP);
+  const [ executeSearch ] = useLazyQuery(GROUP);
 
   useEffect(() => {
     if (groupId) {
