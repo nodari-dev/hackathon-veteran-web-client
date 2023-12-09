@@ -30,9 +30,11 @@ export const CreateGroup: FC<IProps> = (): JSX.Element => {
   `;
 
   const groupCreate = gql`
-      mutation CreateUserGroup($command: CreateUserGroupCommandInput!) {
-        createUserGroup(command: $command) {
+      mutation CreateUserGroup($input:  CreateUserGroupInput!) {
+        createUserGroup(input: $input) {
+        userGroupEntity {
           id
+          }
         }
       }
   `;
@@ -83,8 +85,8 @@ export const CreateGroup: FC<IProps> = (): JSX.Element => {
 
   const createGroup = () => {
     if (!!data?.users) {
-      const phones = data?.users.map((user:any) => user?.phoneNumber);
-      create({ variables: { command: { title, usersPhoneNumbers: phones } } });
+      const phones = data?.users.map((user: any) => user?.phoneNumber);
+      create({ variables: { input: { command: { title, usersPhoneNumbers: phones } } } });
     }
   };
 
