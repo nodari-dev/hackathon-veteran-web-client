@@ -44,8 +44,7 @@ const USER_MSG = gql`
     totalCount
     items {
       botType
-      id
-      messageId
+      isQuestion
       text
       timestamp
     }
@@ -113,14 +112,10 @@ export const User: FC<IProps> = (): JSX.Element => {
 
   const config: any = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Message Id",
-      dataIndex: "messageId",
-      key: "messageId",
+      title: "is Question",
+      dataIndex: "isQuestion",
+      key: "isQuestion",
+      render: (record) => record ? "Yes" : "No",
     },
     {
       title: "Bot Type",
@@ -167,7 +162,12 @@ export const User: FC<IProps> = (): JSX.Element => {
         </Descriptions>
 
         <Title level={5}>Messages</Title>
-        <Table loading={!userMSG?.length} columns={config} dataSource={userMSG || []}  pagination={{ ...params.pagination, total, onChange: onPaginationChange }}/>
+        <Table
+          loading={!userMSG?.length}
+          columns={config}
+          dataSource={userMSG || []}
+          pagination={{ ...params.pagination, total, onChange: onPaginationChange }}
+        />
       </Skeleton>
     </Flex>
   );

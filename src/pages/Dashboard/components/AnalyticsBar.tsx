@@ -26,7 +26,7 @@ export const AnalyticsBar: FC<IProps> = ({ data }: any) => {
         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
           <Card title="Загальна кількість користувачів" style={cartStyles}>
             <Title level={2}>
-              {data.length}
+              {data?.length}
             </Title>
           </Card>
         </Col>,
