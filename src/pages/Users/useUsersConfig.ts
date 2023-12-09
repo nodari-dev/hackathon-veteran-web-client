@@ -1,62 +1,40 @@
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 export const useUsersConfig: any = ({ onView, onSub }: any) => {
-    const {t} = useTranslation()
+  const { t } = useTranslation();
   return (
     [
       {
-        title: "ID",
-        dataIndex: "id",
-        sorter: (a: any, b: any) => a.id - b.id,
-        key: "id",
+        title: "Full Name",
+        dataIndex: "fullName",
+        key: "fullName",
       },
       {
-        title: "Bot Customer Id",
-        dataIndex: "botCustomerId",
-        sorter: (a: any, b: any) => a.id - b.id,
-        key: "botCustomerId",
-      },
-      {
-        title: t("users.totalKids"),
-        dataIndex: "childrenCount",
-        align: "center",
-        sorter: (a: any, b: any) => a.childrenCount - b.childrenCount,
-        key: "childrenCount",
+        title: "Phone Number",
+        dataIndex: "phoneNumber",
+        align: "left",
+        key: "phoneNumber",
       },
       {
         title: t("users.bot"),
-        dataIndex: "botType",
-        filters: [
-          {
-            text: "Telegram",
-            value: "Telegram",
-          },
-          {
-            text: "Viber",
-            value: "Viber",
-          },
-        ],
-        filterMode: "tree",
-        onFilter: (value: string, record: any) => record.botType === value,
-        key: "botType",
+        dataIndex: "botTypes",
+        key: "botTypes",
+        render: (record: any) => record.join(", "),
       },
       {
-        title: t("users.subscription"),
-        dataIndex: "isSubscribed",
-        key: "isSubscribed",
-        align: "center",
-        render: (record: any) => onSub(record),
-      },
-      {
-        title: t("users.frequency"),
-        dataIndex: "recommendationFrequency",
-        key: "recommendationFrequency",
+        title: "Age",
+        dataIndex: "age",
+        key: "age",
       },
       {
         title: t("users.region"),
         dataIndex: "region",
         key: "region",
-        render: (record: any) => record.name,
+      },
+      {
+        title: "Type",
+        dataIndex: "type",
+        key: "type",
       },
       {
         title: t("users.actions"),
