@@ -1,39 +1,69 @@
 import { FC, useEffect, useState } from "react";
-import { Button, Flex, Popconfirm } from "antd";
+import { Button, Flex, Popconfirm, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import Title from "antd/es/typography/Title";
-import { useApi, useNotification } from "../../hooks";
-import { List } from "../../components/List";
+import { gql, useLazyQuery } from "@apollo/client";
 import { useTranslation } from "react-i18next";
+
+const EXCHANGE_RATES = gql`
+  query pagedUserGroups($pageSize: Int, $offset: Int ) {
+  pagedUserGroups(
+    skip: $offset
+    take: $pageSize
+  ) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+    }
+    totalCount
+    items {
+      title
+      id
+    }
+  }
+}
+`;
 
 interface IProps {}
 
 export const Groups: FC<IProps> = (): JSX.Element => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
+  const [ total, setTotal ] = useState<number>();
+  const [ executeSearch, { data, loading } ] = useLazyQuery(EXCHANGE_RATES);
+  const [ params, setParams ] = useState<any>({
+    pagination: {
+      page: 1,
+      pageSize: 10,
+    },
+    sorters: {},
+  });
 
-  const columns: any = [
+  useEffect(() => {
+    const variables: any = {
+      pageSize: params.pagination.pageSize,
+      offset: params.pagination.pageSize * (params.pagination.page - 1),
+    };
+
+    if (Object.keys(params.sorters).length) {
+      variables.sorters = params.sorters;
+    }
+
+    executeSearch({ variables }).then((res) => {
+      setTotal(res.data.pagedUsers.totalCount);
+    });
+  }, [ params ]);
+
+  const config: any[] = [
     {
       title: "ID",
       dataIndex: "id",
-      sorter: (a: any, b: any) => a.id - b.id,
       key: "id",
     },
     {
       title: t("groups.name"),
-      dataIndex: "name",
-      sorter: true,
-      key: "name",
-    },
-    {
-      title: t("groups.users"),
-      dataIndex: "customersCount",
-      sorter: (a: any, b: any) => a.customersCount - b.customersCount,
-      key: "customersCount",
-    },
-    {
-      title: t("groups.traffic"),
-      dataIndex: "customerTraffics",
-      key: "customerTraffics",
+      dataIndex: "title",
+      key: "title",
     },
     {
       title: t("groups.actions"),
@@ -42,40 +72,35 @@ export const Groups: FC<IProps> = (): JSX.Element => {
       fixed: "right",
       width: "166px",
       align: "center",
-      render: (record: any) => {
-        return (
-          <Flex gap={8}>
-            <Button onClick={() => navigate("/group/" + record.id)}>{t("groups.view")}</Button>
-            <Popconfirm title={t("groups.deleteConfirm")} onConfirm={() => handleDelete(record.id)}>
-              <Button danger>{t("groups.delete")}</Button>
-            </Popconfirm>
-          </Flex>
-        );
-      },
+      render: (record: any) => (
+        <Flex gap={8}>
+          <Button onClick={() => navigate("/group/" + record.id)}>{t("groups.view")}</Button>
+          <Popconfirm title={t("groups.deleteConfirm")} onConfirm={() => handleDelete(record.id)}>
+            <Button danger>{t("groups.delete")}</Button>
+          </Popconfirm>
+        </Flex>
+      ),
     },
   ];
 
-  const api = useApi();
-  const notification = useNotification();
-  const navigate = useNavigate();
-  const [ refresh, setRefresh ] = useState(false);
-
-  useEffect(() => {
-    if (refresh) {
-      setRefresh(false);
-    }
-  }, [ refresh ]);
-
-  const handleDelete = (id: any): void => {
-    api.groups.delete({ id }).then(() => {
-      notification.success("Groud was deleted!");
-      setRefresh(true);
-    });
+  const handleDelete = (id: string) => {
+    console.log("delete", id);
   };
+
+  const onPaginationChange = (page: number, pageSize: number): void => {
+    setParams({ ...params, pagination: { page, pageSize } });
+  };
+
   return (
     <Flex gap="small" vertical>
-      <Title level={3}>{t("groups.title")}</Title>
-      {!refresh && <List resource="groups" config={columns} />}
+      <Title level={3} style={{ margin: 0 }}>{t("groups.title")}</Title>
+      <Table
+        loading={loading}
+        columns={config}
+        pagination={{ ...params.pagination, total, onChange: onPaginationChange }}
+        dataSource={data?.pagedUserGroups?.items}
+        scroll={{ x: 600 }}
+      />
     </Flex>
   );
 };
