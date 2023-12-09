@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { FileSearchOutlined } from "@ant-design/icons";
 import { constants } from "../../styles/constants";
 import {gql, useLazyQuery} from "@apollo/client";
+import {ColumnChart, LineChart, PieChart} from "../../components";
 
 interface IProps {}
 
@@ -23,26 +24,25 @@ const GROUPS = gql`
 `;
 
 const USERS = gql`
-  query Users {
-      users(where: {
-        phoneNumber: {
-          in: ["363463", "66346346", "423535"]
-        } 
-      }) {
-          items {
-              fullName
-              age
-          }
+  query Users($where: UserEntityFilterInput, $order: [UserEntitySortInput!]) {
+      users(where: $where, order: $order) {
+        fullName
+        region
+        registrationDate
+        type
+        botTypes
+        age
       }
   }
 `
 
-
 export const Analytics: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
   const [ group, setGroup ] = useState();
-  const [ selected, setSelected ] = useState<string>();
+  const [ selected, setSelected ] = useState(null);
   const [ getGroups, {data} ] = useLazyQuery(GROUPS);
+  const [getUSERs, { data: users }] = useLazyQuery(USERS);
+
 
   const loading = !data;
 
@@ -54,17 +54,28 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
     const selectedGroup = data?.userGroups?.find(group => group?.id === selected)
     setGroup(selectedGroup)
 
+    if(selected != null){
+      getUSERs({ variables: {
+          where: {
+            phoneNumber: {
+              in: selectedGroup?.usersPhoneNumbers
+            }
+          }
+        }})
+    }
   }, [selected])
 
   const handleChange = (id: any) => {
     setSelected(id);
-    // // @ts-ignore
-    // api.groups.customers({ id, params: { pagination: [ { pageSize: 1000000, page: 1 } ] } })
-    //   .then((r) => {
-    //     setData([ ...r.items ]);
-    //     setKids(r.items.map((item: any) => item.kids).flat(Infinity));
-    //   });
   };
+
+  const getLineChartData = () => {
+    return users?.users?.map(user => {
+      const newArray = [...user.botTypes]
+      newArray.sort()
+      return {...user, botTypes: newArray}
+    })
+  }
 
   return (
     <Flex gap="small" vertical>
@@ -80,34 +91,34 @@ export const Analytics: FC<IProps> = (): JSX.Element => {
           />
           {selected && <Title style={{ margin: 0 }} level={5}>{t("analytics.usersInGroup")}: {group?.usersPhoneNumbersCount}</Title>}
         </Flex>
-
       </Flex>
-      {data?.length ? <Row gutter={[ 16, 16 ]}>
+
+      {data?.userGroups?.length && users?.users?.length ? <Row gutter={[ 16, 16 ]}>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-            <Card title={t("analytics.kidsAge")}>
-              {/*<LineChart data={kids} keyword={"age"} />*/}
+            <Card title="Вік користувачів">
+              <LineChart data={users?.users} keyword={"age"} />
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
             <Card title={t("analytics.recommendationDay")}>
-              {/*<LineChart data={data} keyword={"recommendationDay"} />*/}
+              <LineChart data={getLineChartData()} keyword={"botTypes"} />
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
             <Card title={t("analytics.conversationState")}>
-              {/*<ColumnChart data={data} keyword={"conversationState"} />*/}
+              <ColumnChart data={users?.users} keyword={"age"} />
             </Card>
           </Col>
         </Skeleton>
         <Skeleton loading={loading} active={true}>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-            <Card title={t("analytics.preschoolStatus")}>
-              {/*<PieChart data={kids} keyword={"preschoolStatus"} />*/}
+            <Card title="Тип користувачів">
+              <PieChart data={users?.users} keyword={"type"} />
             </Card>
           </Col>
         </Skeleton>
