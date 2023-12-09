@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Button, Col, Flex, Form, Input, InputNumber, Row, Select } from "antd";
 import Title from "antd/es/typography/Title";
 import TextArea from "antd/es/input/TextArea";
-import { useApi, useNotification } from "../../hooks";
+import { useNotification } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 import { useTableData } from "../Group/useTableData";
 import { useTranslation } from "react-i18next";
@@ -12,7 +12,6 @@ const { Option } = Select;
 interface IProps {}
 
 export const CreateGroup: FC<IProps> = (): JSX.Element => {
-  const api = useApi();
   const navigate = useNavigate();
   const notification = useNotification();
   const { days, tableLabels, conversationStates } = useTableData();

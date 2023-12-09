@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { IPieChart } from "../models/chart";
 
 function getObjectProperty(obj: any, keyPath: any) {
-  const keys = keyPath.split('.');
+  const keys = keyPath.split(".");
   let result = obj;
 
   for (const key of keys) {
@@ -16,7 +16,7 @@ function getObjectProperty(obj: any, keyPath: any) {
   return result;
 }
 
-export const useChartsData = ({data, keyword}: IPieChart) => {
+export const useChartsData = ({ data, keyword }: IPieChart) => {
   return useMemo(() => {
     const regionCounts: any = {};
 

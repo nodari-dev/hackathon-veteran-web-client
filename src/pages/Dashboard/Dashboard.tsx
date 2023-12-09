@@ -1,39 +1,19 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, Col, Flex, Row, Skeleton } from "antd";
 import Title from "antd/es/typography/Title";
 import { AnalyticsBar } from "./components/AnalyticsBar";
-import { useApi } from "../../hooks";
 import { IUser } from "../../models";
 import { IData } from "../../models/data";
-import { PieChart, LineChart, ColumnChart } from "../../components";
+import { ColumnChart, LineChart, PieChart } from "../../components";
 
 interface IProps {}
 
 export const Dashboard: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const api = useApi();
   const [ data, setData ] = useState<IData>();
   const [ users, setUsers ] = useState<IUser[]>([]);
-
-  const convertToAnalyticsData = (values:any) => ({ users: values[0], groups: values[1], regions: values[2] });
-
-  useEffect(() => {
-    Promise.all([
-        api.users.get({}).then(r => r),
-        api.groups.get({}).then(r => r),
-        api.regions.get({}).then(r => r),
-      ],
-    ).then(value => setData(convertToAnalyticsData(value)));
-  }, []);
-
-  useEffect(() => {
-    // @ts-ignore
-    api.users.get({ params: { pagination: [ { pageSize: 1000000, page: 1 } ] } })
-      .then((r: any) => setUsers(r.items));
-
-  }, []);
 
   const loading = !data;
 

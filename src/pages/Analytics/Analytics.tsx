@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from "react";
 import { Card, Col, Flex, Result, Row, Select, Skeleton } from "antd";
 import Title from "antd/es/typography/Title";
 import { useTranslation } from "react-i18next";
-import { useApi } from "../../hooks";
 import { ColumnChart, LineChart, PieChart } from "../../components";
 import { ICustomer } from "../../models/customer";
 import { FileSearchOutlined } from "@ant-design/icons";
@@ -12,7 +11,6 @@ interface IProps {}
 
 export const Analytics: FC<IProps> = (): JSX.Element => {
   const { t } = useTranslation();
-  const api = useApi();
   const [ groups, setGroups ] = useState<any[]>([]);
   const [ selected, setSelected ] = useState<string>();
   const [ data, setData ] = useState<ICustomer[]>();
