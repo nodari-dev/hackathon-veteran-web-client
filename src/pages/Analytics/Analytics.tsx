@@ -1,9 +1,8 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Card, Col, Flex, Result, Row, Select, Skeleton } from "antd";
 import Title from "antd/es/typography/Title";
 import { useTranslation } from "react-i18next";
 import { ColumnChart, LineChart, PieChart } from "../../components";
-import { ICustomer } from "../../models/customer";
 import { FileSearchOutlined } from "@ant-design/icons";
 import { constants } from "../../styles/constants";
 
