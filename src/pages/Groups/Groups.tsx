@@ -19,6 +19,7 @@ const EXCHANGE_RATES = gql`
     items {
       title
       id
+      usersPhoneNumbersCount
     }
   }
 }
@@ -64,6 +65,11 @@ export const Groups: FC<IProps> = (): JSX.Element => {
       title: t("groups.name"),
       dataIndex: "title",
       key: "title",
+    },
+    {
+      title: t("groups.users"),
+      dataIndex: "usersPhoneNumbersCount",
+      key: "usersPhoneNumbersCount",
     },
     {
       title: t("groups.actions"),

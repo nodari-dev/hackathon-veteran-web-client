@@ -1,38 +1,104 @@
 import { FC, useEffect, useState } from "react";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { Descriptions, Flex, Skeleton, Table } from "antd";
 import Title from "antd/es/typography/Title";
 import { useParams } from "react-router-dom";
-import { useApi } from "../../hooks";
 import { useTranslation } from "react-i18next";
+import { gql, useLazyQuery } from "@apollo/client";
 
 interface IProps {}
 
+const USER = gql`
+  query users($id: String!) {
+  pagedUsers(
+    where: {
+      phoneNumber: {eq: $id}
+    }
+  ) {
+    totalCount
+    items {
+      age
+      botTypes
+      fullName
+      phoneNumber
+      region
+      registrationDate
+      type
+    }
+  }
+}
+`;
+
+const USER_MSG = gql`
+  query pagedUserMessages($id: String!, $pageSize: Int, $offset: Int) {
+  pagedUserMessages(
+    skip: $offset
+    take: $pageSize
+    where: {
+      userPhoneNumber: {eq: $id}
+    }
+  ) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+    }
+    totalCount
+    items {
+      botType
+      id
+      messageId
+      text
+      timestamp
+    }
+  }
+}
+`;
+
 const tableData: any = {
-  botType: "botType",
-  recommendationFrequency: "recommendationFrequency",
-  conversationState: "conversationState",
-  recommendationDay: "recommendationDay",
-  recommendationTime: "recommendationTime",
-  regionId: "regionId",
-  isSubscribed: "isSubscribed",
+  fullName: "fullName",
+  phoneNumber: "phoneNumber",
+  age: "age",
+  botTypes: "botTypes",
   region: "region",
-  kidsCount: "kidsCount",
-  id: "id",
-  createdAt: "createdAt",
-  updatedAt: "updatedAt",
+  type: "type",
+  registrationDate: "registrationDate",
 };
 
 export const User: FC<IProps> = (): JSX.Element => {
   const { userId } = useParams();
   const { t } = useTranslation();
-  const api = useApi();
   const [ user, setUser ] = useState<any>();
+  const [ userMSG, setUserMSG ] = useState<any>();
+  const [ executeSearch ] = useLazyQuery(USER);
+  const [ executeUserMSG ] = useLazyQuery(USER_MSG);
+  const [ total, setTotal ] = useState<number>();
+  const [ params, setParams ] = useState<any>({
+    pagination: {
+      page: 1,
+      pageSize: 10,
+    },
+    sorters: {},
+  });
+
+  useEffect(() => {
+    const variables: any = {
+      id: userId,
+      pageSize: params.pagination.pageSize,
+      offset: params.pagination.pageSize * (params.pagination.page - 1),
+    };
+
+    executeUserMSG({ variables }).then((res) => {
+      setUserMSG(res.data.pagedUserMessages.items);
+      setTotal(res.data.pagedUserMessages.totalCount);
+    });
+  }, [ params ]);
 
   useEffect(() => {
     if (userId) {
-      api.users.one({ id: userId }).then((r) => {
-        setUser(r.items[0]);
+      executeSearch({ variables: { id: userId } }).then((data) => {
+        setUser(data.data.pagedUsers.items[0]);
+      });
+      executeUserMSG({ variables: { id: userId } }).then((data) => {
+        setUserMSG(data.data.pagedUserMessages.items);
       });
     }
   }, [ userId ]);
@@ -41,7 +107,7 @@ export const User: FC<IProps> = (): JSX.Element => {
     ? Object.keys(tableData).map((key: any) => ({
       key,
       label: tableData[key],
-      children: key === "region" ? user[key].name : user[key],
+      children: user[key],
     }))
     : [];
 
@@ -49,29 +115,34 @@ export const User: FC<IProps> = (): JSX.Element => {
     {
       title: "ID",
       dataIndex: "id",
-      sorter: (a: any, b: any) => a.id - b.id,
       key: "id",
     },
     {
-      title: t(`user-info.name`),
-      dataIndex: "name",
-      sorter: true,
-      key: "name",
+      title: "Message Id",
+      dataIndex: "messageId",
+      key: "messageId",
     },
     {
-      title: t(`user-info.age`),
-      dataIndex: "age",
-      align: "center",
-      sorter: (a: any, b: any) => a.age - b.age,
-      key: "age",
+      title: "Bot Type",
+      dataIndex: "botType",
+      key: "botType",
     },
     {
-      title: t(`user-info.preschoolStatus`),
-      dataIndex: "preschoolStatus",
-      key: "preschoolStatus",
-      align: "center",
+      title: "Text",
+      dataIndex: "text",
+      key: "text",
+    },
+    {
+      title: "Timestamp",
+      dataIndex: "timestamp",
+      key: "timestamp",
+      render: (record) => (new Date(record)).toLocaleString(),
     },
   ];
+
+  const onPaginationChange = (page: number, pageSize: number): void => {
+    setParams({ ...params, pagination: { page, pageSize } });
+  };
 
   return (
     <Flex gap="small" vertical>
@@ -79,15 +150,7 @@ export const User: FC<IProps> = (): JSX.Element => {
         <Descriptions title={t(`user-info.title`)}>
           {items.map((item) => {
 
-            if (item.key.includes("is")) {
-              return (
-                <Descriptions.Item key={item.key} label={t(`user-info.${item.key}`)}>
-                  {item.children ? <CheckOutlined style={{ color: "green" }} /> : <CloseOutlined style={{ color: "red" }} />}
-                </Descriptions.Item>
-              );
-            }
-
-            if (item.key.includes("At")) {
+            if (item.key.includes("Date")) {
               return (
                 <Descriptions.Item key={item.key} label={t(`user-info.${item.key}`)}>
                   {new Date(item.children).toLocaleString()}
@@ -103,8 +166,8 @@ export const User: FC<IProps> = (): JSX.Element => {
           })}
         </Descriptions>
 
-        <Title level={5}>{t(`user-info.children`)}</Title>
-        <Table loading={!user?.kids?.length} columns={config} dataSource={user?.kids || []} />
+        <Title level={5}>Messages</Title>
+        <Table loading={!userMSG?.length} columns={config} dataSource={userMSG || []}  pagination={{ ...params.pagination, total, onChange: onPaginationChange }}/>
       </Skeleton>
     </Flex>
   );

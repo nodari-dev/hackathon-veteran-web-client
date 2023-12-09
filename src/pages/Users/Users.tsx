@@ -79,7 +79,7 @@ export const Users: FC<IProps> = (): JSX.Element => {
 
   const renderView = (record: any) => {
     return (
-      <Button onClick={() => navigate("/user/" + record.id)}>{t("users.view")}</Button>
+      <Button onClick={() => navigate("/user/" + record.phoneNumber)}>{t("users.view")}</Button>
     );
   };
   const config = useUsersConfig({ onView: renderView });
