@@ -51,7 +51,7 @@ export const Groups: FC<IProps> = (): JSX.Element => {
     }
 
     executeSearch({ variables }).then((res) => {
-      setTotal(res.data.pagedUsers.totalCount);
+      setTotal(res.data.pagedUserGroups.totalCount);
     });
   }, [ params ]);
 
